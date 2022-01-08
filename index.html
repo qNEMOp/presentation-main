@@ -1,0 +1,967 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>Численные методы</title>
+
+		<link rel="stylesheet" href="dist/reset.css">
+		<link rel="stylesheet" href="dist/reveal.css">
+		<link rel="stylesheet" href="dist/theme/beige.css" id="theme">
+		<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin="" />
+		<link rel="shortcut icon" href="https://atom.io/favicon.ico">
+
+		<!-- Theme used for syntax highlighted code -->
+		<link rel="stylesheet" href="plugin/highlight/monokai.css" id="highlight-theme">
+
+		<style>
+			.my-input {
+			color: rgb(139, 97, 43);
+			width: 100px;
+			height: 40px;
+			border: 2px solid transparent;
+			border-radius: 8px
+			}
+			.my-input:hover {
+				background: #b8b097;
+			}
+
+			.my-input:focus {
+				outline: none;
+				box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(241, 8, 8, 0.19);
+}
+			input {
+				width:20%;
+				margin:10px 0;
+				padding:10px;
+			}
+			.type-2 {
+				background-color: #fafafa;
+				border:0;
+				box-shadow:0 0 4px rgba(0,0,0,0.3);
+				transition: .3s box-shadow;
+			}
+			.type-2:hover {
+				box-shadow:0 0 4px rgba(0,0,0,0.5);
+			}
+			select {
+				font-size: 30px;
+			}
+			#table {
+				font-size: 50%;
+			}
+			.hide {
+				display: none;
+			}
+			.map {
+				height: 350px;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+
+			<section class="center" data-markdown  data-separator-notes="^Note:">
+				<script type="text/template">
+					Численные методы
+					=========================
+			
+					Note:
+					Заголовок
+				</script>
+			</section>
+			<section data-markdown  data-separator-notes="^Note:">
+				<script type="text/template">
+					### Определение
+
+					Численные методы (вычислительные методы, методы вычислений) — раздел вычислительной математики, изучающий приближенные способы решения типовых математических задач,
+					 которые либо не решаются, либо трудно решаются точными аналитическими методами (вычислительная математика в узком смысле).
+				
+					Note:
+					
+				</script>
+			</section>
+			<section data-markdown  data-separator-notes="^Note:">
+				<script type="text/template">
+					#### Основами для вычислительных методов являются:
+
+					- решение систем линейных уравнений;
+					- интерполирование и приближённое вычисление функций;
+					- численное интегрирование;
+					- численное решение системы нелинейных уравнений;
+					- численное решение обыкновенных дифференциальных уравнений;
+					- уравнений математической физики;
+					- решение задач оптимизации.
+				
+					Note:
+					
+				</script>
+			</section>
+			<section data-markdown  data-separator-notes="^Note:">
+				<script type="text/template">
+					
+					#### Система линейных алгебраических уравнений (СЛАУ)
+					— система уравнений, каждое уравнение в которой является линейным — алгебраическим уравнением первой степени.
+					Note:
+					
+				</script>
+			</section>
+			<section data-markdown  data-separator-notes="^Note:">
+				<script type="text/template">
+					#### Система линейных алгебраических уравнений (СЛАУ)
+					В классическом варианте коэффициенты при переменных, свободные члены и неизвестные считаются вещественными числами, но все методы и результаты сохраняются 
+					(либо естественным образом обобщаются) на случай любых полей, например, комплексных чисел.
+					
+					Note:
+					
+				</script>
+			</section>
+				<section data-markdown  data-separator-notes="^Note:">
+					<script type="text/template">
+						### Общий вид СЛАУ:
+						
+						
+						$ \begin{cases}
+							a_{11}x_1+a_{12}+\ldots+a_{1n}x_n=b_1\\\\ 
+							a_{21}x_1+a_{22}+\ldots+a_{2n}x_n=b_2\\\\
+							\dots \\\\
+							a_{m1}x_1+a_{m2}+\ldots+a_{mn}x_n=b_m
+					\end{cases} $ \
+					Здесь $m$ — количество уравнений \
+					 $n$ — количество переменных \
+					 $x_{1},x_{2},\dots ,x_{n}$ — неизвестные \
+					  $a_{11},a_{12},\dots ,a_{mn}$ и $b_{1},b_{2},\dots ,b_{m}$ — предполагаются известными.
+						Note:
+						
+					</script>
+				</section>
+				<section data-markdown  data-separator-notes="^Note:">
+					<script type="text/template">
+						### Метод Гаусса
+						Пусть исходная система выглядит следующим образом:
+						$$ \begin{cases}
+							a_{11}x_1+\ldots+a_{1n}x_n=b_1 \\\\ 
+							\dots \\\\
+							a_{m1}x_1+\ldots+a_{mn}x_n=b_m
+							\end{cases} $$
+						Её можно записать в матричном виде: $Ax=b$
+					
+						Note:
+						
+					</script>
+				</section>
+				<section data-markdown  data-separator-notes="^Note:">
+					<script type="text/template">
+						### Метод Гаусса
+						$$A=\begin{pmatrix}
+					a_{11} \ldots a_{1n} \\\\
+					\dots \\\\
+					a_{m1} \ldots a_{mn}
+			 		\end{pmatrix},$$
+					 $	x=\begin{pmatrix}
+						x_{1} \\\\
+						\dots \\\\
+						x_{n}
+						 \end{pmatrix}$,
+						 $b=\begin{pmatrix}
+						 a_{1} \\\\
+						 \dots \\\\
+						 a_{n} 
+							\end{pmatrix}$
+					</script>
+				</section>
+				<section data-markdown  data-separator-notes="^Note:">
+					<script type="text/template">
+						### Метод Гаусса
+						
+						Алгоритм метода Гаусса состоит из двух этапов. Первый этап называется прямым ходом метода и заключается в приведении матрицы системы к треугольному виду 
+						по формулам:\
+						 $k=1,2,\ldots,n-1$ \
+						$a_{ij}=a_{ij}-\dfrac{a_{ik}}{a_{kk}}a_{kj} \kern{15px}  j=k,k+1,\ldots,n$ \
+						$$b_{i}=b_{i}-\dfrac{a_{ik}}{a_{kk}}b_{k} \kern{15px} i=k+1,k+2,\ldots,n$$
+						
+					</script>
+				</section>
+				<section data-markdown  data-separator-notes="^Note:">
+					<script type="text/template">
+						### Метод Гаусса
+					
+						Таким образом, выполнив $n-1$ шаг, мы получим систему с верхней
+						треугольной матрицей, причем эта система эквивалентна исходной,
+						а элемент $a_{kk}$, на который происходит деление, называется ведущим
+						элементом на $k$-м шаге. 
+						
+					</script>
+				</section>
+				<section data-markdown  data-separator-notes="^Note:">
+					<script type="text/template">
+						### Метод Гаусса
+						Решение системы с треугольной матрицей
+						выписывается явно и называется обратным ходом метода Гаусса:
+						$$ x_{k}=\dfrac{b_k-\displaystyle\sum_{i=1}^na_{kj}x_j}{a_{kk}},\kern{15px} k=n,n-1,\ldots,1$$
+						
+					</script>
+				</section>
+				<section data-markdown  data-separator-notes="^Note:">
+					<script type="text/template">
+						### Метод Гаусса
+						#### Пример
+						Покажем, как методом Гаусса можно решить следующую систему:
+						$$ \begin{cases}
+							2x+y-z=8 \\\\
+							-3x-y+2z=11\\\\
+							-2x+y+z=-3
+					\end{cases} $$
+						
+					</script>
+				</section>
+				<section data-markdown  data-separator-notes="^Note:">
+					<script type="text/template">
+						### Метод Гаусса
+						#### Пример
+						Обнулим коэффициенты при $x$ во второй и третьей строчках. Для этого прибавим к ним первую строчку, умноженную на $\textstyle \frac {3}{2} $и $1$, соответственно:
+						$$ \begin{cases}
+							2x+y-z=8 \\\\
+							\frac {1}{2}y+\frac {1}{2}z=1\\\\ 
+							2y+z=-5
+							\end{cases} 
+						$$
+						
+					</script>
+				</section>
+				<section data-markdown  data-separator-notes="^Note:">
+					<script type="text/template">
+						### Метод Гаусса
+						#### Пример
+						Теперь обнулим коэффициент при $y$ в третьей строке, вычтя из неё вторую строку, умноженную на 4:
+						$$ \begin{cases}
+							2x+y-z=8 \\\\ 
+							\frac {1}{2}y+\frac {1}{2}z=1 \\\\
+							-z=1
+							\end{cases} 
+						$$
+						
+					</script>
+				</section>
+				<section data-markdown  data-separator-notes="^Note:">
+					<script type="text/template">
+						### Метод Гаусса
+						#### Пример
+						В результате мы привели исходную систему к треугольному виду, тем самым закончив первый этап алгоритма.
+						На втором этапе разрешим полученные уравнения в обратном порядке. Имеем:
+						$z=-1$ из третьего; \
+						$y=3$ из второго, подставив полученное $z$; \
+						$x=2$ из первого, подставив полученные $z$ и $y$.\
+						Таким образом исходная система решена.
+						
+					</script>
+				</section>
+				<section data-markdown  data-separator-notes="^Note:">
+					<script type="text/template">
+						### Метод Жордана-Гаусса
+						
+						Этот метод отличается от обычного метода Гаусса тем, что на каждом шаге прямого
+						хода, после нахождения ведущего элемента, зануляются элементы
+						столбца не только ниже ведущего элемента, но и выше, то есть матрица $A$ приводится к диагональному виду.
+					</script>
+				</section>
+				<section data-markdown  data-separator-notes="^Note:">
+					<script type="text/template">
+						### Метод Жордана-Гаусса
+						
+						Тогда решение записывается как $x_i=\frac {b_i}{a_{ii}}$, где $i=1,2,\ldots,n$. \
+						Если еще на каждом шаге перед
+						занулением других элементов столбца ведущую строку делить на ведущий элемент, то в результате прямого хода получится единичная
+						матрица. А значит, обратный ход не потребуется, так как на месте
+						столбца правой части получим решение исходной системы.
+						
+						
+					</script>
+				</section>
+				<section data-markdown  data-separator-notes="^Note:">
+					<script type="text/template">
+						### Метод Якоби
+						Метод Якоби — разновидность метода простой итерации для решения системы линейных алгебраических уравнений. Назван в честь Карла Густава Якоби. 
+						
+					</script>
+				</section>
+				<section data-markdown  data-separator-notes="^Note:">
+					<script type="text/template">
+						### Метод Якоби
+						Для того, чтобы построить итеративную процедуру метода Якоби, необходимо провести предварительное преобразование системы уравнений 
+						$Ax=b$ к итерационному виду \
+						$x=Bx+g$. Оно может быть осуществлено по одному из следующих правил:
+
+					</script>
+				</section>
+				<section data-markdown  data-separator-notes="^Note:">
+					<script type="text/template">
+						### Метод Якоби
+						
+						$$B=E-D^{-1}A=D^{-1}(D-A)$$
+						$$B=-D^{-1}(L+U)=-D^{-1}(A-D)$$
+						$$g=D^{-1}b$$
+						$$D_{ii}^{-1}=\frac {1}{D^{-1}},\kern{20px} D_{ii}\ne 0,\kern{20px} i=1,2,\ldots,n$$
+					</script>
+				</section>
+				<section data-markdown  data-separator-notes="^Note:">
+					<script type="text/template">
+						### Метод Якоби
+						$D$ означает матрицу, у которой на главной диагонали стоят соответствующие элементы матрицы $A$, а все остальные нули; 
+						тогда как матрицы $U$ и $L$ содержат верхнюю и нижнюю треугольные части $A$, на главной диагонали которых нули. $E$ - еденичная матрица. 
+					</script>
+				</section>
+				<section data-markdown  data-separator-notes="^Note:">
+					<script type="text/template">
+						### Метод Якоби
+						Тогда процедура нахождения решения имеет вид: \
+						$x^{(k+1)}=Bx^{(k)}+g$ \
+						Или в виде поэлементной формулы:\
+						$x_i^{(k+1)}=\frac {1}{a_{ii}}(b_i-\sum_{i\ne j} a_{ij}x_j^{(k)}) $ \
+						$i=1,2,\ldots,n$\
+						где $k$ счётчик итерации.
+					</script>
+				</section>
+				<section data-markdown  data-separator-notes="^Note:">
+					<script type="text/template">
+						### Метод Якоби
+						#### Условие остановки
+						Условие окончания итерационного процесса при достижении точности $\varepsilon$  имеет вид:\
+						$\Vert x^{(k+1)}-x^{(k)} \rVert \geqslant \frac {1-q}{q}\varepsilon$\
+						Для достаточно хорошо обусловленной матрицы $B$ (при $\Vert B \rVert = q < \frac {1}{2}$) оно выполняется при\
+						$\Vert x^{(k+1)}-x^{(k)} \rVert \geqslant \varepsilon$\
+						Данный критерий не требует вычисления нормы матрицы и часто используется на практике.
+					</script>
+				</section>
+				<section data-markdown  data-separator-notes="^Note:">
+					<script type="text/template">
+						### Метод Якоби
+						При этом точное условие окончания итерационного процесса имеет вид\
+						$$\Vert Ax^{(k)}-b \rVert \geqslant \varepsilon$$
+						и требует дополнительного умножения матрицы на вектор на каждой итерации, что примерно в два раза увеличивает вычислительную сложность алгоритма.
+					</script>
+				</section>
+				<section data-markdown  data-separator-notes="^Note:">
+					<script type="text/template">
+						### Метод Якоби
+						Достаточное условие сходимости интерационных методов (метода Якоби) - преобладание диагональных элементов
+					</script>
+				</section>
+				<section data-markdown  data-separator-notes="^Note:">
+					<script type="text/template">
+						### Невязка
+						Невязка — величина ошибки (расхождения) приближённого равенства.
+					</script>
+				</section>
+				<section data-markdown  data-separator-notes="^Note:">
+					<script type="text/template">
+						### Невязка
+						Пусть требуется найти такое x, что значение функции: $f(x)=b$.
+						Подставив приближенное значение $x_0$ вместо $x$, получаем невязку \
+						$b-f(x_0)$, 
+						а ошибка в этом случае равна $x_0-x$
+						Если точное значение $x$ неизвестно, вычисление ошибки невозможно, однако при этом может быть определена невязка.
+					</script>
+				</section>
+				<section data-markdown  data-separator-notes="^Note:">
+					<script type="text/template">
+						### Невязка аппроксимации функции
+						
+						Схожее название используется в дифференциальных, интегральных и функциональных уравнениях.
+						Для аппроксимации $f_a$ решения $f$ уравнения $T(f)(x)=g(x)$,\
+						невязка может быть функцией \
+						$g(x)-T(f_a)(x)$ 
+						
+					</script>
+				</section>
+				<section data-markdown  data-separator-notes="^Note:">
+					<script type="text/template">
+						### Невязка аппроксимации функции
+						или по-другому максимумом нормы разности
+						$\max_{x \in \chi}|g(x)-T(f_a)(x)|$ \
+						на области $\chi$, где функция
+						$f_a$ есть усреднённое решение $f$, или некоторый интеграл функции разности, например,\
+						$\int_{\chi}|g(x)-T(f_a)(x)|^2dx$
+						
+					</script>
+				</section>
+				<section data-markdown  data-separator-notes="^Note:">
+					<script type="text/template">
+						### Невязка аппроксимации функции
+						
+						В большинстве случаев, чем меньше невязка, тем аппроксимированное значение ближе к решению, то есть, \
+						$\frac {f_a(x)-f(x)}{f(x)}\ll 1$. \
+						В этом случае начальное уравнение принималось за корректное; и невязка могла быть использована как показатель отклонения аппроксимации от точного решения.
+					</script>
+				</section>
+				<!--
+				<section data-markdown  data-separator-notes="^Note:">
+					<script type="text/template">
+						#### РЕШЕНИЕ СЛАУ
+						<div>
+						<input type="text"  id="11" class=my-input>$x_{11}+$
+						<input type="text"  id="12" class=my-input>$x_{12}+$
+						<input type="text"  id="13" class=my-input>$x_{13}=$
+						<input type="text"  id="1" class=my-input>
+						</div>
+						<div>
+						<input type="text"  id="21" class=my-input>$x_{21}+$
+						<input type="text"  id="22" class=my-input>$x_{22}+$
+						<input type="text"  id="23" class=my-input>$x_{23}=$
+						<input type="text"  id="2" class=my-input>
+						</div>
+						<div>
+						<input type="text"  id="31" class=my-input>$x_{31}+$
+						<input type="text"  id="32" class=my-input>$x_{32}+$
+						<input type="text"  id="33" class=my-input>$x_{33}=$
+						<input type="text"  id="3" class=my-input>
+						</div>
+						<input type="button" value="Клик" id="click" class=my-input>
+
+						<output id="otvet"></output>
+
+					</script>
+				</section>		
+				-->
+				<section>
+					<h2>Решение СЛАУ методом Гаусса</h2>
+					<input type="text"  id="size" class=type-2 placeholder="Введите размерность матрицы">
+					<!-- Кнопка запуска программы -->
+					<input type="button" value="Клик" id="_size" class=my-input>
+					<!-- Вывод результата -->
+					<output id="_result"></output>
+				</section>
+
+				<section>
+					<h2>Решение СЛАУ методом Жордана-Гаусса</h2>
+					<input type="text" class=type-2 id="size1" placeholder="Введите размерность матрицы">
+					<!-- Кнопка запуска программы -->
+					<input type="button" value="Клик" id="_size1" class=my-input>
+					<!-- Вывод результата -->
+					<output id="_result1"></output>
+				</section>
+
+				<section>
+					<h2>Решение СЛАУ методом Якоби</h2>
+					<input type="text" class=type-2 id="size2" placeholder="Введите размерность матрицы">
+					<!-- Кнопка запуска программы -->
+					<input type="button" value="Клик" id="_size2" class=my-input>
+					
+					<!-- Вывод результата -->
+					<output id="_result2"></output>
+				</section>
+				
+				<section class="center" data-markdown  data-separator-notes="^Note:">
+					<script type="text/template">
+						 # Исходный код программ
+
+						Note:
+					</script>
+				</section>
+
+				<section data-markdown  data-separator-notes="^Note:">
+					<script type="text/template">
+						### Метод Гаусса
+
+						```
+						function Iteration(iter_item) { //Функция итеррация
+							for(iter_item=0;iter_item<(n-1);iter_item++) { //Цикл выполнения итерраций
+								if (m[iter_item][iter_item] == 0) SwapRows(iter_item); //Проверка на ноль
+								for(j=n; j>=iter_item; j--) {
+									m[iter_item][j] /= m[iter_item][iter_item]; //Делим строку i на а[i][i]
+								}
+								for(i=iter_item+1; i < n; i++) { //Выполнение операций со строками
+									for(j=n;j>=iter_item;j--) {
+										m[i][j] -= m[iter_item][j] * m[i][iter_item];
+									}
+								}		
+							}	
+						};
+						function SwapRows(iter_item) { //Функция перемены строк
+							for(i=iter_item+1;i< n;i++) {
+								if(m[i][iter_item] !== 0) {
+									for(j=0;j<=n;j++) {
+										k = m[i-1][j];
+										m[i-1][j] = m[i][j];
+										m[i][j] = k;
+									}
+								} 
+							}
+						};
+						function Answers() { //Функция поиска и вывода корней
+							l[n-1] = m[n-1][n]/m[n-1][n-1];
+							for(i=n-2;i>=0;i--) {
+								k=0;
+								for(j=n-1;j>i;j--) {
+									k = (m[i][j]*l[j]) + k;
+								}
+								l[i] = m[i][n] - k;
+							}
+							for(i=n;i>0;i--) {
+								x+="<center> x" + i + " = " + l[i-1] + "</center>";
+							}
+						};
+						```
+					</script>
+				</section>
+
+				<section data-markdown  data-separator-notes="^Note:">
+					<script type="text/template">
+						### Метод Жордана-Гаусса
+
+						```
+						function Iteration(iter_item) { //Функция итеррация
+							for(iter_item=0;iter_item<(n-1);iter_item++) { //Цикл выполнения итерраций
+								if (m[iter_item][iter_item] == 0) SwapRows(iter_item); //Проверка на ноль
+									for(j=n; j>=iter_item; j--) {
+										m[iter_item][j] /= m[iter_item][iter_item]; //Делим строку i на а[i][i]
+									}
+									for(i=iter_item+1; i< n; i++) { //Выполнение операций со строками
+										for(j=n;j>=iter_item;j--) {
+											m[i][j] -= m[iter_item][j] * m[i][iter_item];
+										}
+									}
+							}
+						}
+						function SwapRows(iter_item) { //Функция перемены строк
+							for(i=iter_item+1;i< n;i++) {
+								if(m[i][iter_item] !== 0) {
+									for(j=0;j<=n;j++) {
+										k = m[i-1][j];
+										m[i-1][j] = m[i][j];
+										m[i][j] = k;
+									}
+								} 
+							}
+						};
+						function ObrIteration(iter_item) { //Функция итеррация
+							for(iter_item=n-1;iter_item >= 1;iter_item--) { //Цикл выполнения итерраций
+								for(i=iter_item-1; i>=0; i--) { //Выполнение операций со строками
+									for(j=n;j>=iter_item;j--) {
+										m[i][j] = m[i][j] - (m[iter_item][j] * m[i][iter_item])/m[iter_item][iter_item];
+									}
+								}
+							}
+						};
+						for(i=0; i< n; i++) { //Выполнение операций со строками
+							x1=m[i][n]/m[i][i]
+							x+="<center> x" + (i+1) + " = " + x1 + "</center>";
+						}
+						```
+					</script>
+				</section>
+				<section data-markdown  data-separator-notes="^Note:">
+					<script type="text/template">
+						### Метод Якоби
+
+						```
+						for(i=0;i< n;i++){
+							x[i]=0.5;
+						}
+						while(Norm>0.01){
+							Norm=0;
+							sum1=0;
+							sum2=0;
+							
+							for(i=0;i< n;i++){
+								x1[i]=x[i];
+								c1[i]=0;
+								c2[i]=0;
+							}
+							for(k=0; k< n; ++k) {
+									for(i=0; i <= (k-1); i++) {
+										c1[i]+=m[k][i]*x[i]
+									}
+							}
+							for(k=0; k< n; k++) {
+									for(i=k+1; i < n; ++i) {
+										c2[i]+=m[k][i]*x[i]
+									}
+							}
+							for(k=0; k< n; k++) { 
+								x[k]=(b[k]-c1[k]-c2[k])/m[k][k];
+							}
+							
+							for(i=0;i< n;i++){
+								Norm+=Math.pow(x[i]-x1[i],2);
+							}
+							l++
+							if(l>2000){ //выход из цикла в случае бесконечности
+								break;
+							}
+						}
+						```
+					</script>
+				</section>
+				<section data-menu-title="Фото">
+					<img src="image/1.jpg" alt="Фото">
+				</section>	
+				<section data-menu-title="К Бэйл">
+					<img src="image/2.jpg" alt="К Бэйл">
+				</section>
+				<section data-menu-title="Понял?">
+					<img src="image/3.jpg" alt="Понял?">
+				</section>
+			</div>
+		</div>
+
+		<script src="dist/reveal.js"></script>
+		<script src="plugin/notes/notes.js"></script>
+		<script src="plugin/markdown/markdown.js"></script>
+		<script src="plugin/highlight/highlight.js"></script>
+		<script src="plugin/math/math.js"></script>
+
+
+		<script src="js/algebrite.bundle-for-browser.js"></script>
+		<script src="js/math.js"></script>
+		<script src="js/plotly-2.6.3.min.js"></script>
+		<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
+		<script src="http://city.9pr.ru/socket.io/socket.io.js"></script>
+		
+		<script>
+			// More info about initialization & config:
+			// - https://revealjs.com/initialization/
+			// - https://revealjs.com/config/
+			Reveal.initialize({
+				hash: true,
+
+				center: false,
+
+				slideNumber: true,
+
+				controls: true, 
+
+				dependencies: [
+					{
+						src: 'plugin/menu/menu.js'
+					},
+				],
+
+				menu : {
+					numbers: true,
+					markers: true, 
+				},
+
+				// Learn about plugins: https://revealjs.com/plugins/
+				plugins: [ RevealMarkdown, RevealHighlight, RevealNotes, RevealMath.KaTeX]
+			});
+		</script>
+
+		<!--
+		<script>
+			document.querySelector('#_size2').onclick = (e) => {
+				N=document.querySelector('#size2').value;
+				var A=new Array(N); //Определение рабочего массива
+				var F=new Array(N), TempX = Array(N), norm, X = new Array(N), eps=0.1,x2; 
+				for(i=0; i<N; ++i) {
+						A[i] = new Array(N);
+				}
+				for(i=0; i<N; ++i) { //Заполнение матрицы 
+					alert("Введите уравнение")
+						for(j=0; j < N; ++j) {
+								A[i][j] = prompt("Введите коэффициенты неизвестных:");
+						}
+				}
+				for(i=0; i<N; i++) {
+					F[i]=prompt("Введите коэффициенты свободных членов:");
+				}
+				for(i=0;i<N;i++){
+					X[i]=1;
+				}
+				do {
+					for (i = 0; i < N; i++) {
+						TempX[i] = F[i];
+						for (g = 0; g < N; g++) {
+							if (i != g)
+								TempX[i] -= A[i][g] * X[g];
+						}
+						TempX[i] /= A[i][i];
+					}
+							norm = Math.abs(X[0] - TempX[0]);
+					for (h = 0; h < N; h++) {
+						if (Math.abs(X[h] - TempX[h]) > norm)
+							norm = Math.abs(X[h] - TempX[h]);
+						X[h] = TempX[h];
+					}
+				} while (norm > eps);
+				for(i=0;i<N;i++){
+					TempX[i]=0;
+				}
+				for(i=0;i<N;i++){
+					x2+="<center> x" + (i+1) + " = " + X[i] + "</center>";
+				}
+				document.querySelector('#_result2').innerHTML = x2+norm;
+			}
+		</script>
+	-->
+
+
+		<script>
+			document.querySelector('#_size2').onclick = (e) => {
+				n=document.querySelector('#size2').value;
+				var m=new Array(n); //Определение рабочего массива
+				var b=new Array(n), x=new Array(n),x1=new Array(n),  sum1,sum2, Norm=1,x2='',l=0;
+				var c1=new Array(n),c2=new Array(n);
+				for(i=0; i<n; ++i) {
+						m[i] = new Array(n);
+				}
+				for(i=0; i<n; ++i) { //Заполнение матрицы 
+					alert("Введите коэфициенты"+" "+ (i+1)+" " +"строки ")
+						for(j=0; j < n; ++j) {
+								m[i][j] = prompt("Введите коэффициенты неизвестных:");
+						}
+				}
+				alert("Введите коэффициенты свободных членов:")
+				for(i=0; i<n; i++) {
+					b[i]=prompt("Введите коэффициенты свободных членов:");
+				}
+				for(i=0;i<n;i++){
+					x[i]=0.5;
+				}
+				while(Norm>0.01){
+					Norm=0;
+					sum1=0;
+					sum2=0;
+					
+					for(i=0;i<n;i++){
+						x1[i]=x[i];
+						c1[i]=0;
+						c2[i]=0;
+					}
+					for(k=0; k<n; ++k) {
+							for(i=0; i <= (k-1); i++) {
+								c1[i]+=m[k][i]*x[i]
+							}
+					}
+					for(k=0; k<n; k++) {
+							for(i=k+1; i < n; ++i) {
+								c2[i]+=m[k][i]*x[i]
+							}
+					}
+					for(k=0; k<n; k++) { 
+						x[k]=(b[k]-c1[k]-c2[k])/m[k][k];
+					}
+					
+					for(i=0;i<n;i++){
+						Norm+=Math.pow(x[i]-x1[i],2);
+					}
+					l++
+					if(l>2000){ //Чтобы не зависло
+						break;
+					}
+				}
+				if(l>2000)
+				{
+					x2+='<br>'+"Не выполнено достаточное условие сходимости - преобладание диагональных элементов";
+				}
+				else{
+				for(i=0;i<n;i++){
+					x2+="<center> x" + (i+1) + " = " + x[i] + "</center>";
+				}
+				}
+				
+				document.querySelector('#_result2').innerHTML = x2;
+			}
+		</script>
+		
+		<script>
+			document.querySelector('#_size').onclick = (e) => {
+				//n=prompt("Введите число уравнений системы:"); //Ввод данных
+				n=document.querySelector('#size').value;
+				var m=new Array(n); //Определение рабочего массива
+				var l=new Array(n); //Массив ответов
+				var i, j, k, x='';        //Вспомогательные переменные
+				for(i=0; i<n; ++i) {
+						m[i] = new Array(n);
+						l[i] = new Array(n);
+				}
+				
+				for(i=0; i<n; ++i) { //Заполнение матрицы 
+					alert("Введите"+" "+(i+1)+" " +"уравнение")
+						for(j=0; j <= n; ++j) {
+								m[i][j] = prompt("Введите коэффициенты:");
+						}
+				}
+				Iteration(n);
+				Answers();
+				
+				function Iteration(iter_item) { //Функция итеррация
+						for(iter_item=0;iter_item<(n-1);iter_item++) { //Цикл выполнения итерраций
+								if (m[iter_item][iter_item] == 0) SwapRows(iter_item); //Проверка на ноль
+								for(j=n; j>=iter_item; j--) {
+										m[iter_item][j] /= m[iter_item][iter_item]; //Делим строку i на а[i][i]
+								}
+								for(i=iter_item+1; i<n; i++) { //Выполнение операций со строками
+										for(j=n;j>=iter_item;j--) {
+												m[i][j] -= m[iter_item][j] * m[i][iter_item];
+										}
+								}
+								
+						}
+				};
+				function SwapRows(iter_item) { //Функция перемены строк
+						for(i=iter_item+1;i<n;i++) {
+								if(m[i][iter_item] !== 0) {
+										for(j=0;j<=n;j++) {
+												k = m[i-1][j];
+												m[i-1][j] = m[i][j];
+												m[i][j] = k;
+										}
+								} 
+						}
+				};
+				function Answers() { //Функция поиска и вывода корней
+						l[n-1] = m[n-1][n]/m[n-1][n-1];
+						for(i=n-2;i>=0;i--) {
+								k=0;
+								for(j=n-1;j>i;j--) {
+										k = (m[i][j]*l[j]) + k;
+								}
+								l[i] = m[i][n] - k;
+						}
+						for(i=n;i>0;i--) {
+						x+="<center> x" + i + " = " + l[i-1] + "</center>";
+						}
+				};
+				document.querySelector('#_result').innerHTML = x;
+				//Скрываем саму кнопку
+				document.querySelector('#_size').style.display = 'none';
+				document.querySelector('#size').style.display = 'none';
+			}
+		</script>
+
+		<script>
+			document.querySelector('#_size1').onclick = (e) => {
+				n=document.querySelector('#size1').value;
+				var m=new Array(n); //Определение рабочего массива
+				var i, j, k, x='',x1;        //Вспомогательные переменные
+				for(i=0; i<n; ++i) {
+						m[i] = new Array(n+1);
+				}
+				
+				for(i=0; i<n; ++i) { //Заполнение матрицы 
+					alert("Введите"+" "+(i+1)+" " +"уравнение")
+						for(j=0; j <= n; ++j) {
+								m[i][j] = prompt("Введите коэффициенты:");
+						}
+				}
+				Iteration(n);
+				ObrIteration(n);
+
+				function Iteration(iter_item) { //Функция итеррация
+						for(iter_item=0;iter_item<(n-1);iter_item++) { //Цикл выполнения итерраций
+							if (m[iter_item][iter_item] == 0) SwapRows(iter_item); //Проверка на ноль
+								for(j=n; j>=iter_item; j--) {
+										m[iter_item][j] /= m[iter_item][iter_item]; //Делим строку i на а[i][i]
+								}
+								for(i=iter_item+1; i<n; i++) { //Выполнение операций со строками
+										for(j=n;j>=iter_item;j--) {
+												m[i][j] -= m[iter_item][j] * m[i][iter_item];
+										}
+								}
+								
+						}
+					};
+					function SwapRows(iter_item) { //Функция перемены строк
+						for(i=iter_item+1;i<n;i++) {
+								if(m[i][iter_item] !== 0) {
+										for(j=0;j<=n;j++) {
+												k = m[i-1][j];
+												m[i-1][j] = m[i][j];
+												m[i][j] = k;
+										}
+								} 
+						}
+				};
+					function ObrIteration(iter_item) { //Функция итеррация
+						for(iter_item=n-1;iter_item >= 1;iter_item--) { //Цикл выполнения итерраций
+								for(i=iter_item-1; i>=0; i--) { //Выполнение операций со строками
+										for(j=n;j>=iter_item;j--) {
+												m[i][j] = m[i][j] - (m[iter_item][j] * m[i][iter_item])/m[iter_item][iter_item];
+										}
+								}
+							
+						}
+				};
+				for(i=0; i<n; i++) { //Выполнение операций со строками
+					x1=m[i][n]/m[i][i]
+						x+="<center> x" + (i+1) + " = " + x1 + "</center>";
+					
+				}
+				document.querySelector('#_result1').innerHTML = x;
+			}
+		</script>
+
+<!--
+		<script>
+			window.onload = () => {
+				document.querySelector('#click').onclick = () => {
+					//Скрываем саму кнопку
+					document.querySelector('#_size').style.display = 'none';
+					document.querySelector('#size').style.display = 'none';
+					//Забираем значение из поле ввода
+					let a11 = document.querySelector('#11').value;
+					let a12 = document.querySelector('#21').value;
+					let a13 = document.querySelector('#31').value;
+					let a21 = document.querySelector('#21').value;
+					let a22 = document.querySelector('#22').value;
+					let a23 = document.querySelector('#23').value;
+					let a31 = document.querySelector('#31').value;
+					let a32 = document.querySelector('#32').value;
+					let a33 = document.querySelector('#33').value;
+					let b1 = document.querySelector('#1').value;
+					let b2 = document.querySelector('#2').value;
+					let b3 = document.querySelector('#3').value;
+					
+					//Ссылка на тег результата
+					let result = document.querySelector('#otvet');
+					result = 
+					document.querySelector('#otvet').innerHTML = result;
+				}
+			}
+				var m=new Array(3);
+				var l=new Array(3);
+				for(i=0; i<3; ++i) {
+					m[i] = new Array(3);
+					l[i] = new Array(3);
+				}
+				for(i=0; i<n; ++i) { //Заполнение матрицы
+					for(j=0; j <= n; ++j) {
+							m[i][j] = aij;
+					}
+				}
+
+			window.onload = () => {
+				document.querySelector('#_size').onclick = () => {
+					//Скрываем саму кнопку
+					document.querySelector('#_size').style.display = 'none';
+					document.querySelector('#size').style.display = 'none';
+					//Забираем значение из поле ввода
+					let n = document.querySelector('#size').value;
+					//Ссылка на тег результата
+					let result = document.querySelector('#_result');
+					//Делаем проверки на пустые поля
+					if (n === '') {
+						return result.innerHTML = 'Вы не ввели размерность матрицы';
+					}
+
+
+					document.querySelector('#_result').innerHTML = result;
+				}
+			}
+				function matrix(size) {
+					var m = [[]];
+					for (var i = 0; i < size+1; i += 1) {
+						m[i]=[];
+						for (var j = 0; j < size; j += 1) {
+							m[j]=document.createElement('number');
+						}
+					}
+					return m;
+				}
+		</script>
+		-->
+	</body>
+</html>
