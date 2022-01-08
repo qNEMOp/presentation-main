@@ -430,6 +430,8 @@
 					<input type="text"  id="size" class=type-2 placeholder="Введите размерность матрицы">
 					<!-- Кнопка запуска программы -->
 					<input type="button" value="Клик" id="_size" class=my-input>
+					<!-- Вывод системы -->
+					<output id="system"></output>
 					<!-- Вывод результата -->
 					<output id="_result"></output>
 				</section>
@@ -439,6 +441,8 @@
 					<input type="text" class=type-2 id="size1" placeholder="Введите размерность матрицы">
 					<!-- Кнопка запуска программы -->
 					<input type="button" value="Клик" id="_size1" class=my-input>
+					<!-- Вывод системы -->
+					<output id="system1"></output>
 					<!-- Вывод результата -->
 					<output id="_result1"></output>
 				</section>
@@ -448,7 +452,8 @@
 					<input type="text" class=type-2 id="size2" placeholder="Введите размерность матрицы">
 					<!-- Кнопка запуска программы -->
 					<input type="button" value="Клик" id="_size2" class=my-input>
-					
+					<!-- Вывод системы -->
+					<output id="system2"></output>
 					<!-- Вывод результата -->
 					<output id="_result2"></output>
 				</section>
@@ -604,6 +609,13 @@
 				<section data-menu-title="Понял?">
 					<img src="image/3.jpg" alt="Понял?">
 				</section>
+				<section class="center" data-markdown  data-separator-notes="^Note:">
+					<script type="text/template">
+						 ## Спасибо за внимание
+
+						Note:
+					</script>
+				</section>
 			</div>
 		</div>
 
@@ -717,6 +729,18 @@
 				for(i=0; i<n; i++) {
 					b[i]=prompt("Введите коэффициенты свободных членов:");
 				}
+				var sys="<br>";
+				for(i=0; i<n; ++i) {
+						for(j=0; j < n; ++j) {
+							if(j==0){
+								sys+=m[i][j]+"x"+(j+1);
+							}
+							else {sys+="+"+m[i][j]+"x"+(j+1)};
+						}
+						sys+="="+b[i];
+						sys+="<br>"
+				}
+				document.querySelector('#system2').innerHTML = sys;
 				for(i=0;i<n;i++){
 					x[i]=0.5;
 				}
@@ -772,7 +796,7 @@
 				n=document.querySelector('#size').value;
 				var m=new Array(n); //Определение рабочего массива
 				var l=new Array(n); //Массив ответов
-				var i, j, k, x='';        //Вспомогательные переменные
+				var i, j, k, x="<br>";        //Вспомогательные переменные
 				for(i=0; i<n; ++i) {
 						m[i] = new Array(n);
 						l[i] = new Array(n);
@@ -784,9 +808,26 @@
 								m[i][j] = prompt("Введите коэффициенты:");
 						}
 				}
+				
+				var sys='';
+				for(i=0; i<n; ++i) {
+						for(j=0; j <= n; ++j) {
+							if(j==n){
+								sys+="="+m[i][j];
+							}
+							else if(j==0){
+								sys+=m[i][j]+"x"+(j+1);
+							}
+							else {sys+="+"+m[i][j]+"x"+(j+1)};
+						}
+						sys+="<br>"
+				}
+				document.querySelector('#system').innerHTML = sys;
+
+				
 				Iteration(n);
 				Answers();
-				
+
 				function Iteration(iter_item) { //Функция итеррация
 						for(iter_item=0;iter_item<(n-1);iter_item++) { //Цикл выполнения итерраций
 								if (m[iter_item][iter_item] == 0) SwapRows(iter_item); //Проверка на ноль
@@ -847,6 +888,20 @@
 								m[i][j] = prompt("Введите коэффициенты:");
 						}
 				}
+				var sys="<br>";
+				for(i=0; i<n; ++i) {
+						for(j=0; j <= n; ++j) {
+							if(j==n){
+								sys+="="+m[i][j];
+							}
+							else if(j==0){
+								sys+=m[i][j]+"x"+(j+1);
+							}
+							else {sys+="+"+m[i][j]+"x"+(j+1)};
+						}
+						sys+="<br>"
+				}
+				document.querySelector('#system1').innerHTML = sys;
 				Iteration(n);
 				ObrIteration(n);
 
