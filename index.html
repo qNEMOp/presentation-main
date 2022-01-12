@@ -12,6 +12,7 @@
 		<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin="" />
 		<link rel="shortcut icon" href="https://atom.io/favicon.ico">
 
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.css">
 		<!-- Theme used for syntax highlighted code -->
 		<link rel="stylesheet" href="plugin/highlight/monokai.css" id="highlight-theme">
 
@@ -431,8 +432,10 @@
 					<!-- Кнопка запуска программы -->
 					<input type="button" value="Клик" id="_size" class=my-input>
 					<!-- Вывод системы -->
+					<br>
 					<output id="system"></output>
 					<!-- Вывод результата -->
+					<br>
 					<output id="_result"></output>
 				</section>
 
@@ -442,8 +445,10 @@
 					<!-- Кнопка запуска программы -->
 					<input type="button" value="Клик" id="_size1" class=my-input>
 					<!-- Вывод системы -->
+					<br>
 					<output id="system1"></output>
 					<!-- Вывод результата -->
+					<br>
 					<output id="_result1"></output>
 				</section>
 
@@ -453,8 +458,10 @@
 					<!-- Кнопка запуска программы -->
 					<input type="button" value="Клик" id="_size2" class=my-input>
 					<!-- Вывод системы -->
+					<br>
 					<output id="system2"></output>
 					<!-- Вывод результата -->
+					<br>
 					<output id="_result2"></output>
 				</section>
 				
@@ -496,17 +503,22 @@
 							}
 						};
 						function Answers() { //Функция поиска и вывода корней
-							l[n-1] = m[n-1][n]/m[n-1][n-1];
-							for(i=n-2;i>=0;i--) {
-								k=0;
-								for(j=n-1;j>i;j--) {
-									k = (m[i][j]*l[j]) + k;
+							let x;
+							x+="\\begin{cases}";
+								l[n-1] = m[n-1][n]/m[n-1][n-1];
+								for(i=n-2;i>=0;i--) {
+										k=0;
+										for(j=n-1;j>i;j--) {
+												k = (m[i][j]*l[j]) + k;
+										}
+										l[i] = m[i][n] - k;
 								}
-								l[i] = m[i][n] - k;
-							}
-							for(i=n;i>0;i--) {
-								x+="<center> x" + i + " = " + l[i-1] + "</center>";
-							}
+								for(i=n;i>0;i--) {
+								x+="x_{" + i + "}"+" = " + l[i-1];
+								x+="\\\\"
+								}
+								x+="\\end{cases}";
+								document.querySelector('#_result').innerHTML = katex.renderToString(x);
 						};
 						```
 					</script>
@@ -550,10 +562,14 @@
 								}
 							}
 						};
+						let x ="\\begin{cases}";
 						for(i=0; i< n; i++) { //Выполнение операций со строками
 							x1=m[i][n]/m[i][i]
-							x+="<center> x" + (i+1) + " = " + x1 + "</center>";
+								x+="x_{" + (i+1) +"}" + " = " + x1;
+								x+="\\\\"
 						}
+						x+="\\end{cases}"
+						document.querySelector('#_result1').innerHTML = katex.renderToString(x);
 						```
 					</script>
 				</section>
@@ -625,7 +641,8 @@
 		<script src="plugin/highlight/highlight.js"></script>
 		<script src="plugin/math/math.js"></script>
 
-
+		
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.js"></script>
 		<script src="js/algebrite.bundle-for-browser.js"></script>
 		<script src="js/math.js"></script>
 		<script src="js/plotly-2.6.3.min.js"></script>
@@ -709,13 +726,13 @@
 		</script>
 	-->
 
-
 		<script>
 			document.querySelector('#_size2').onclick = (e) => {
 				n=document.querySelector('#size2').value;
 				var m=new Array(n); //Определение рабочего массива
-				var b=new Array(n), x=new Array(n),x1=new Array(n),  sum1,sum2, Norm=1,x2='',l=0;
+				var b=new Array(n), x=new Array(n),x1=new Array(n),  sum1,sum2, Norm=1,l=0;
 				var c1=new Array(n),c2=new Array(n);
+				var el = document.getElementById("formula");
 				for(i=0; i<n; ++i) {
 						m[i] = new Array(n);
 				}
@@ -729,18 +746,23 @@
 				for(i=0; i<n; i++) {
 					b[i]=prompt("Введите коэффициенты свободных членов:");
 				}
-				var sys="<br>";
+				
+				let sys="\\begin{cases}";
 				for(i=0; i<n; ++i) {
-						for(j=0; j < n; ++j) {
-							if(j==0){
-								sys+=m[i][j]+"x"+(j+1);
-							}
-							else {sys+="+"+m[i][j]+"x"+(j+1)};
+					for(j=0; j < n; ++j) {
+						if(j==0){
+							sys+=m[i][j]+"x_{"+(j+1)+"}";
 						}
-						sys+="="+b[i];
-						sys+="<br>"
+						else {sys+="+"+m[i][j]+"x_{"+(j+1)+"}"};
+					}	
+					sys+="="+b[i];
+					if (i < n-1) {
+						sys+="\\\\"
+					}
 				}
-				document.querySelector('#system2').innerHTML = sys;
+				sys+="\\end{cases}"
+				document.querySelector('#system2').innerHTML = katex.renderToString(sys);
+
 				for(i=0;i<n;i++){
 					x[i]=0.5;
 				}
@@ -776,18 +798,25 @@
 						break;
 					}
 				}
+				let x2="";
 				if(l>2000)
 				{
-					x2+='<br>'+"Не выполнено достаточное условие сходимости - преобладание диагональных элементов";
+					x2+="\\text{Не выполнено достаточное условие сходимости -}";
+					x2+="\\\\"
+					x2+="\\text{ преобладание диагональных элементов}";
 				}
 				else{
+				x2 += "\\begin{cases}"
 				for(i=0;i<n;i++){
-					x2+="<center> x" + (i+1) + " = " + x[i] + "</center>";
+					x2+="x_{" + (i+1) +"}"+ " = " + x[i];
+					x2+="\\\\";
 				}
+				x2+="\\end{cases}"
 				}
 				
-				document.querySelector('#_result2').innerHTML = x2;
+				document.querySelector('#_result2').innerHTML = katex.renderToString(x2);
 			}
+			
 		</script>
 		
 		<script>
@@ -796,7 +825,7 @@
 				n=document.querySelector('#size').value;
 				var m=new Array(n); //Определение рабочего массива
 				var l=new Array(n); //Массив ответов
-				var i, j, k, x="<br>";        //Вспомогательные переменные
+				var i, j, k;        //Вспомогательные переменные
 				for(i=0; i<n; ++i) {
 						m[i] = new Array(n);
 						l[i] = new Array(n);
@@ -809,21 +838,24 @@
 						}
 				}
 				
-				var sys='';
+				
+				let sys="\\begin{cases}";
 				for(i=0; i<n; ++i) {
-						for(j=0; j <= n; ++j) {
-							if(j==n){
-								sys+="="+m[i][j];
-							}
-							else if(j==0){
-								sys+=m[i][j]+"x"+(j+1);
-							}
-							else {sys+="+"+m[i][j]+"x"+(j+1)};
+					for(j=0; j <= n; ++j) {
+						if(j==n){
+							sys+="="+m[i][j];
 						}
-						sys+="<br>"
+						else if(j==0){
+							sys+=m[i][j]+"x_{"+(j+1)+"}";
+						}
+						else {sys+="+"+m[i][j]+"x_{"+(j+1)+"}"};
+					}	
+					if (i < n-1) {
+						sys+="\\\\"
+					}
 				}
-				document.querySelector('#system').innerHTML = sys;
-
+				sys+="\\end{cases}"
+				document.querySelector('#system').innerHTML = katex.renderToString(sys);
 				
 				Iteration(n);
 				Answers();
@@ -853,7 +885,10 @@
 								} 
 						}
 				};
+				//let x;
 				function Answers() { //Функция поиска и вывода корней
+					let x;
+					x+="\\begin{cases}";
 						l[n-1] = m[n-1][n]/m[n-1][n-1];
 						for(i=n-2;i>=0;i--) {
 								k=0;
@@ -863,10 +898,13 @@
 								l[i] = m[i][n] - k;
 						}
 						for(i=n;i>0;i--) {
-						x+="<center> x" + i + " = " + l[i-1] + "</center>";
+						x+="x_{" + i + "}"+" = " + l[i-1];
+						x+="\\\\"
 						}
+						x+="\\end{cases}";
+						document.querySelector('#_result').innerHTML = katex.renderToString(x);
 				};
-				document.querySelector('#_result').innerHTML = x;
+				//document.querySelector('#_result').innerHTML = katex.renderToString(x);
 				//Скрываем саму кнопку
 				document.querySelector('#_size').style.display = 'none';
 				document.querySelector('#size').style.display = 'none';
@@ -877,7 +915,7 @@
 			document.querySelector('#_size1').onclick = (e) => {
 				n=document.querySelector('#size1').value;
 				var m=new Array(n); //Определение рабочего массива
-				var i, j, k, x='',x1;        //Вспомогательные переменные
+				var i, j, k,x1;        //Вспомогательные переменные
 				for(i=0; i<n; ++i) {
 						m[i] = new Array(n+1);
 				}
@@ -888,20 +926,25 @@
 								m[i][j] = prompt("Введите коэффициенты:");
 						}
 				}
-				var sys="<br>";
+
+				let sys="\\begin{cases}";
 				for(i=0; i<n; ++i) {
-						for(j=0; j <= n; ++j) {
-							if(j==n){
-								sys+="="+m[i][j];
-							}
-							else if(j==0){
-								sys+=m[i][j]+"x"+(j+1);
-							}
-							else {sys+="+"+m[i][j]+"x"+(j+1)};
+					for(j=0; j <= n; ++j) {
+						if(j==n){
+							sys+="="+m[i][j];
 						}
-						sys+="<br>"
+						else if(j==0){
+							sys+=m[i][j]+"x_{"+(j+1)+"}";
+						}
+						else {sys+="+"+m[i][j]+"x_{"+(j+1)+"}"};
+					}	
+					if (i < n-1) {
+						sys+="\\\\"
+					}
 				}
-				document.querySelector('#system1').innerHTML = sys;
+				sys+="\\end{cases}"
+				document.querySelector('#system1').innerHTML = katex.renderToString(sys);
+
 				Iteration(n);
 				ObrIteration(n);
 
@@ -940,12 +983,14 @@
 							
 						}
 				};
+				let x ="\\begin{cases}";
 				for(i=0; i<n; i++) { //Выполнение операций со строками
 					x1=m[i][n]/m[i][i]
-						x+="<center> x" + (i+1) + " = " + x1 + "</center>";
-					
+						x+="x_{" + (i+1) +"}" + " = " + x1;
+						x+="\\\\"
 				}
-				document.querySelector('#_result1').innerHTML = x;
+				x+="\\end{cases}"
+				document.querySelector('#_result1').innerHTML = katex.renderToString(x);
 			}
 		</script>
 
